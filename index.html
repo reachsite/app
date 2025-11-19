@@ -114,13 +114,58 @@
                 <a href="#" onclick="showSection('elderly-reg')" class="hover:text-reach-cyan transition duration-300">Apoio a Idosos</a>
                 
                 <!-- Toggle Tema -->
-                <button id="theme-toggle" class="hover:text-reach-pink transition duration-300 ml-4" onclick="toggleTheme()">
-                    <i data-lucide="sun" class="w-6 h-6"></i>
-                </button>
                 
-                <button id="auth-button" class="btn-reach px-4 py-1.5 rounded-full bg-reach-pink text-reach-bg font-bold shadow-lg" onclick="handleAuth()">
-                    <i data-lucide="log-in" class="inline w-5 h-5 mr-1"></i> Entrar
-                </button>
+
+                <header class="sticky top-0 z-20 backdrop-blur-md bg-reach-primary-90 shadow-xl border-b border-reach-purple/40">
+    <nav class="max-w-7xl mx-auto p-4 flex justify-between items-center">
+        <div id="nav-menu" class="hidden md:flex space-x-6 items-center text-base font-semibold">
+            <button id="theme-toggle" class="hover:text-reach-pink transition duration-300 ml-4" onclick="toggleTheme()">
+                <i data-lucide="sun" class="w-6 h-6"></i>
+            </button>
+            
+            <button id="register-button" class="btn-reach px-4 py-1.5 rounded-full bg-reach-cyan text-reach-bg font-bold shadow-lg" onclick="window.location.href='register.html'">
+                <i data-lucide="user-plus" class="inline w-5 h-5 mr-1"></i> Cadastre-se
+            </button>
+            
+            
+        </div>
+        <button class="md:hidden text-2xl" onclick="toggleMobileMenu()">
+            <i data-lucide="menu" class="w-7 h-7"></i>
+        </button>
+    </nav>
+</header>
+
+<script type="module">
+    // ... (imports do Firebase e variáveis globais permanecem os mesmos) ...
+
+    // --- FUNÇÕES DE INTERFACE (UI) ---
+    // ... (showSection, updateProfileUI permanecem os mesmos) ...
+    
+    // Função existente, agora atualizada para tratar o botão "Entrar" como "Sair" após o login
+    window.handleAuth = async function() {
+        if (auth.currentUser) {
+            // Se estiver logado, tenta sair
+            try {
+                await signOut(auth);
+                showModal('Logout', 'Você saiu da sua conta REACH.', 'log-out', 'reach-cyan');
+            } catch (error) {
+                console.error("Erro ao sair:", error);
+                showModal('Erro', 'Não foi possível sair. Tente novamente.', 'alert-triangle', 'reach-pink');
+            }
+        } else {
+            // Se não estiver logado, redireciona para a página de registro/login (simulação)
+            // Na sua lógica atual, o botão Entrar muda para Sair quando logado.
+            // Para manter a funcionalidade de "Entrar", podemos simular um login anônimo ou redirecionar.
+            // No seu código original, a ação principal é mostrar o pop-up, mas aqui ele só faria log-out.
+            showModal('Login', 'Esta é a página inicial. O login está ativo, mas a tela de formulário de login foi movida para `register.html` como uma tela unificada de autenticação.', 'log-in', 'reach-cyan');
+            // Como alternativa, você pode redirecionar para register.html se quiser uma única tela:
+            // window.location.href='register.html';
+        }
+    }
+    
+    // ... (listenToProfile, listenToServices, updateProfileUI e todo o restante do script da página principal) ...
+    
+</script>
             </div>
             <button class="md:hidden text-2xl" onclick="toggleMobileMenu()">
                 <i data-lucide="menu" class="w-7 h-7"></i>
@@ -362,12 +407,21 @@
                 </button>
             </div>
         </div>
-
+         <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    new window.VLibras.Widget("https://vlibras.gov.br/app/");
+  </script>
     </main>
 
     <!-- Footer -->
     <footer class="p-6 text-center text-sm text-reach-text/60 border-t border-reach-purple/50 mt-10">
-        &copy; 2024 REACH - Banco de Tempo Comunitário. Desenvolvido para um Impacto Humano.
+        &copy; 2025 REACH - Banco de Tempo Comunitário. Desenvolvido para um Impacto Humano.
         <p class="text-xs mt-2" id="current-user-id-footer"></p>
     </footer>
     

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REACH - Cadastro de Usuário</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Mapeamento de Cores Semânticas (Dark Mode Padrão) --- */
+        :root {
+            /* Cores de Fundo e Texto */
+            --color-bg-primary: #0F172A;   /* Navy (slate-900) */
+            --color-bg-secondary: #1E293B; /* Card Background (slate-800) */
+            --color-text-primary: #F8FAFC; /* Branco Suave */
+            --color-text-secondary: #94A3B8; /* Gray-400 */
+            
+            /* Cores de Acento */
+            --color-pink: #EC4899;      /* Pink Vibrante */
+            --color-cyan: #22D3EE;      /* Cyan Brilhante */
+            --color-purple: #8B5CF6;    /* Roxo Profundo */
+        }
+
+        /* --- Modo Claro Overrides --- */
+        .light-mode {
+            --color-bg-primary: #F1F5F9;   /* Light Gray */
+            --color-bg-secondary: #FFFFFF; /* White */
+            --color-text-primary: #0F172A; /* Navy */
+            --color-text-secondary: #475569; /* Slate-600 */
+            
+            /* Ajustes de Acento para contraste no modo claro */
+            --color-pink: #E91E63;
+            --color-cyan: #0891B2;
+            --color-purple: #7C3AED;
+        }
+
+        /* Estilo Base aplicado ao Body */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            transition: background-color 0.3s, color 0.3s; /* Transição suave de tema */
+        }
+        
+        /* Classes dinâmicas baseadas nas variáveis CSS */
+        .bg-reach-card {
+            background-color: var(--color-bg-secondary);
+        }
+        .btn-reach {
+            transition: all 0.3s ease;
+        }
+        .btn-reach:hover {
+            opacity: 0.9;
+            transform: scale(1.03);
+            box-shadow: 0 0 15px var(--color-pink);
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'reach-pink': 'var(--color-pink)',
+                        'reach-cyan': 'var(--color-cyan)',
+                        'reach-purple': 'var(--color-purple)',
+                        'reach-bg': 'var(--color-bg-primary)',
+                        'reach-text': 'var(--color-text-primary)',
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen antialiased flex items-center justify-center p-4">
+
+    <div id="register-container" class="max-w-xl w-full bg-reach-card p-8 sm:p-10 rounded-2xl shadow-2xl border-t-4 border-reach-cyan fade-in">
+        
+        <div class="text-center mb-8">
+            <h2 class="text-4xl font-extrabold text-reach-pink">
+                <i data-lucide="user-plus" class="inline w-8 h-8 mr-2 text-reach-cyan"></i> Novo Cadastro REACH
+            </h2>
+            <p class="text-reach-text/70 mt-2">Junte-se ao nosso Banco de Tempo Comunitário.</p>
+        </div>
+
+        <form id="registration-form" onsubmit="event.preventDefault(); submitRegistration(event);">
+            
+            <div id="step-1">
+                <h3 class="text-2xl font-semibold mb-4 text-reach-cyan border-b border-reach-purple/50 pb-2">Passo 1: Dados Pessoais</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="full-name" class="block text-sm font-medium text-reach-text/70 mb-1">Nome Completo</label>
+                        <input type="text" id="full-name" name="full-name" class="w-full p-3 rounded-lg bg-reach-bg border border-reach-purple text-reach-text focus:ring-reach-cyan focus:border-reach-cyan" required>
+                    </div>
+
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-reach-text/70 mb-1">E-mail</label>
+                        <input type="email" id="email" name="email" class="w-full p-3 rounded-lg bg-reach-bg border border-reach-purple text-reach-text focus:ring-reach-cyan focus:border-reach-cyan" required>
+                    </div>
+                    
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-reach-text/70 mb-1">Nome de Usuário</label>
+                        <input type="text" id="username" name="username" class="w-full p-3 rounded-lg bg-reach-bg border border-reach-purple text-reach-text focus:ring-reach-cyan focus:border-reach-cyan" required>
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-reach-text/70 mb-1">Senha (Mín. 8 caracteres)</label>
+                        <input type="password" id="password" name="password" class="w-full p-3 rounded-lg bg-reach-bg border border-reach-purple text-reach-text focus:ring-reach-cyan focus:border-reach-cyan" required minlength="8">
+                    </div>
+                    
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-reach-text/70 mb-1">Telefone</label>
+                        <input type="tel" id="phone" name="phone" class="w-full p-3 rounded-lg bg-reach-bg border border-reach-purple text-reach-text focus:ring-reach-cyan focus:border-reach-cyan" required>
+                    </div>
+                </div>
+
+                <button type="button" onclick="nextStep(2)" class="mt-6 w-full btn-reach px-6 py-3 rounded-xl font-bold bg-reach-cyan text-reach-bg hover:bg-reach-cyan/80">
+                    Próximo Passo: Endereço e Segurança <i data-lucide="arrow-right" class="inline w-5 h-5 ml-2"></i>
+                </button>
+            </div>
+
+            <div id="step-2" class="hidden">
+                <h3 class="text-2xl font-semibold mb-4 text-reach-cyan border-b border-reach-purple/50 pb-2">Passo 2: Endereço e Verificação</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="address" class="block text-sm font-medium text-reach-text/70 mb-1">Endereço Completo</label>
+                        <input type="text" id="address" name="address" class="w-full p-3 rounded-lg bg-reach-bg border border-reach-purple text-reach-text focus:ring-reach-cyan focus:border-reach-cyan" required>
+                    </div>
+
+                    <div>
+                        <label for="document" class="block text-sm font-medium text-reach-text/70 mb-1">Documento (RG/CPF)</label>
+                        <input type="text" id="document" name="document" class="w-full p-3 rounded-lg bg-reach-bg border border-reach-purple text-reach-text focus:ring-reach-cyan focus:border-reach-cyan" required>
+                    </div>
+                    
+                    <div class="border border-reach-pink/50 p-4 rounded-lg">
+                        <label for="face-scan" class="block text-sm font-medium text-reach-text mb-2 flex items-center">
+                            <i data-lucide="scan-face" class="w-5 h-5 mr-2 text-reach-pink"></i> 
+                            Reconhecimento Facial (Upload da Foto do Documento)
+                        </label>
+                        <input type="file" id="face-scan" name="face-scan" accept="image/*" class="w-full text-sm text-reach-text/80 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-reach-pink/20 file:text-reach-pink hover:file:bg-reach-pink/30 cursor-pointer" required>
+                        <p class="text-xs text-reach-text/60 mt-2">Simulação: A imagem deve corresponder ao documento. (A verificação real é complexa e exige backend/API).</p>
+                    </div>
+                    
+                </div>
+                
+                <div class="flex space-x-4 mt-6">
+                    <button type="button" onclick="nextStep(1)" class="w-1/3 btn-reach px-6 py-3 rounded-xl font-bold bg-reach-purple/50 text-reach-text hover:bg-reach-purple/70">
+                        <i data-lucide="arrow-left" class="inline w-5 h-5 mr-1"></i> Voltar
+                    </button>
+                    <button type="submit" class="w-2/3 btn-reach px-6 py-3 rounded-xl font-bold bg-reach-pink text-reach-bg hover:bg-reach-pink/80">
+                        <i data-lucide="check-circle" class="inline w-5 h-5 mr-1"></i> Concluir Cadastro
+                    </button>
+                </div>
+            </div>
+            
+            <div class="mt-8 pt-6 border-t border-reach-purple/50">
+                <p class="text-center text-sm text-reach-text/70 mb-4">Ou entre/cadastre-se rapidamente com:</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button type="button" onclick="alert('Simulando Login com Google...')" class="flex items-center justify-center w-36 py-2 border border-reach-purple/50 rounded-lg text-sm font-medium hover:bg-reach-purple/20 transition duration-300">
+                        <i data-lucide="chrome" class="w-5 h-5 mr-2 text-red-500"></i> Google
+                    </button>
+                    <button type="button" onclick="alert('Simulando Login com Facebook...')" class="flex items-center justify-center w-36 py-2 border border-reach-purple/50 rounded-lg text-sm font-medium hover:bg-reach-purple/20 transition duration-300">
+                        <i data-lucide="facebook" class="w-5 h-5 mr-2 text-blue-600"></i> Facebook
+                    </button>
+                    <button type="button" onclick="alert('Simulando Login com Apple...')" class="flex items-center justify-center w-36 py-2 border border-reach-purple/50 rounded-lg text-sm font-medium hover:bg-reach-purple/20 transition duration-300">
+                        <i data-lucide="apple" class="w-5 h-5 mr-2 text-reach-text"></i> Apple
+                    </button>
+                </div>
+            </div>
+            
+            <p class="mt-6 text-center text-sm text-reach-text/70">
+                Já tem conta? <a href="#" onclick="alert('Simulando redirecionamento para Login')" class="text-reach-cyan hover:text-reach-pink font-semibold">Faça Login aqui</a>
+            </p>
+            
+        </form>
+    </div>
+
+    <div id="success-message" class="hidden max-w-xl w-full bg-reach-card p-8 sm:p-10 rounded-2xl shadow-2xl border-t-4 border-reach-pink text-center fade-in">
+        <i data-lucide="award" class="w-16 h-16 mx-auto mb-4 text-reach-cyan"></i>
+        <h2 class="text-4xl font-extrabold mb-4 text-reach-pink">Cadastro Concluído!</h2>
+        <p class="text-reach-text/80 mb-8 text-lg">Parabéns! Você é oficialmente um membro da comunidade REACH. Sua conta está em fase de verificação de documentos.</p>
+        
+        <button id="back-to-home" class="btn-reach px-8 py-3 rounded-xl bg-reach-purple text-reach-bg font-bold hover:bg-reach-purple/80" onclick="window.location.href='index.html'">
+            <i data-lucide="home" class="inline w-5 h-5 mr-2"></i> Voltar à Página Inicial
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            initializeTheme(); // Inicializa o tema na página de registro
+        });
+        
+        // Simulação da função de tema (necessária para register.html funcionar no mesmo tema)
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+            }
+        }
+        
+        // --- Lógica de Formulário Multi-Passo ---
+        window.nextStep = function(step) {
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.add('hidden');
+            
+            if (step === 2) {
+                // Validação mínima do Passo 1 antes de avançar
+                const name = document.getElementById('full-name').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                if (name && email && password.length >= 8) {
+                    document.getElementById('step-2').classList.remove('hidden');
+                } else {
+                    alert('Por favor, preencha todos os campos obrigatórios do Passo 1.');
+                    document.getElementById('step-1').classList.remove('hidden');
+                }
+            } else if (step === 1) {
+                document.getElementById('step-1').classList.remove('hidden');
+            }
+        }
+        
+        // --- Lógica de Submissão do Cadastro ---
+        window.submitRegistration = async function(event) {
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Simulação de verificação complexa e cadastro.
+            console.log('Dados de Cadastro Coletados:', data);
+            
+            // Simulação de Autenticação Firebase (usando email/senha)
+            // IMPORTANTE: Isso exigiria uma inicialização real do Firebase, que não está incluída neste arquivo.
+            // Aqui, apenas simulamos o sucesso.
+            
+            try {
+                // Simulação de 3 segundos de processamento e verificação
+                document.getElementById('registration-form').innerHTML = '<div class="text-center text-reach-cyan"><i data-lucide="loader-circle" class="w-8 h-8 mx-auto mb-4 animate-spin"></i><p>Processando e Verificando Identidade...</p></div>';
+                lucide.createIcons();
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                
+                // Sucesso: Esconde o formulário e mostra a mensagem de sucesso
+                document.getElementById('register-container').classList.add('hidden');
+                document.getElementById('success-message').classList.remove('hidden');
+                
+            } catch (error) {
+                // Em caso de erro real do Firebase/Backend:
+                alert('Erro ao processar o cadastro. Tente novamente: ' + error.message);
+                document.getElementById('registration-form').innerHTML = originalFormContent; // Restaurar o formulário
+            }
+        }
+
+    </script>
+</body>
+</html>
