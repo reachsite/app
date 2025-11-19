@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REACH - Resgatar, Educar, Amar, Cuidar, Humanizar</title>
+    <!-- Carrega Tailwind CSS para Estilo Rápido e Profissional -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Ícones Lucide para um Visual Limpo -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Mapeamento de Cores Semânticas (Dark Mode Padrão) --- */
+        :root {
+            /* Cores de Fundo e Texto */
+            --color-bg-primary: #0F172A;   /* Navy (slate-900) */
+            --color-bg-secondary: #1E293B; /* Card Background (slate-800) */
+            --color-text-primary: #F8FAFC; /* Branco Suave */
+            --color-text-secondary: #94A3B8; /* Gray-400 */
+            
+            /* Cores de Acento */
+            --color-pink: #EC4899;      /* Pink Vibrante */
+            --color-cyan: #22D3EE;      /* Cyan Brilhante */
+            --color-purple: #8B5CF6;    /* Roxo Profundo */
+        }
+
+        /* --- Modo Claro Overrides --- */
+        .light-mode {
+            --color-bg-primary: #F1F5F9;   /* Light Gray */
+            --color-bg-secondary: #FFFFFF; /* White */
+            --color-text-primary: #0F172A; /* Navy */
+            --color-text-secondary: #475569; /* Slate-600 */
+            
+            /* Ajustes de Acento para contraste no modo claro */
+            --color-pink: #E91E63;
+            --color-cyan: #0891B2;
+            --color-purple: #7C3AED;
+        }
+
+        /* Estilo Base aplicado ao Body */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            transition: background-color 0.3s, color 0.3s; /* Transição suave de tema */
+        }
+        
+        /* Classes dinâmicas baseadas nas variáveis CSS */
+        .bg-reach-card {
+            background-color: var(--color-bg-secondary);
+        }
+        .bg-reach-primary-90 {
+            background-color: color-mix(in srgb, var(--color-bg-primary) 90%, transparent); /* Para Navbar Blur */
+        }
+
+        /* Efeito de Hover e Animação de Entrada (AoS Simulado) */
+        .interactive-card {
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .interactive-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            /* Sombra Roxa Intensa que se adapta um pouco menos no light mode */
+            box-shadow: 0 10px 20px color-mix(in srgb, var(--color-purple) 50%, transparent);
+        }
+        .btn-reach {
+            transition: all 0.3s ease;
+        }
+        .btn-reach:hover {
+            opacity: 0.9;
+            transform: scale(1.03);
+            box-shadow: 0 0 15px var(--color-pink);
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    <!-- Configuração Customizada do Tailwind: Mapeando Acentos -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // Cores de acento (usadas em botões, textos e bordas de destaque)
+                        'reach-pink': 'var(--color-pink)',
+                        'reach-cyan': 'var(--color-cyan)',
+                        'reach-purple': 'var(--color-purple)',
+                        // Cores de fundo e texto que se adaptam
+                        'reach-bg': 'var(--color-bg-primary)',
+                        'reach-text': 'var(--color-text-primary)',
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen antialiased">
+
+    <!-- Navbar/Header (Fixo e Transparente) -->
+    <header class="sticky top-0 z-20 backdrop-blur-md bg-reach-primary-90 shadow-xl border-b border-reach-purple/40">
+        <nav class="max-w-7xl mx-auto p-4 flex justify-between items-center">
+            <h1 class="text-3xl font-extrabold tracking-widest">
+                <span class="text-reach-pink">R</span><span class="text-reach-cyan">EACH</span>
+            </h1>
+            <div id="nav-menu" class="hidden md:flex space-x-6 items-center text-base font-semibold">
+                <a href="#" onclick="showSection('home')" class="hover:text-reach-cyan transition duration-300">Início</a>
+                <a href="#" onclick="showSection('exchanges')" class="hover:text-reach-cyan transition duration-300">Banco de Trocas</a>
+                <a href="#" onclick="showSection('profile')" class="hover:text-reach-cyan transition duration-300">Meu REACH</a>
+                <a href="#" onclick="showSection('elderly-reg')" class="hover:text-reach-cyan transition duration-300">Apoio a Idosos</a>
+                
+                <!-- Toggle Tema -->
+                <button id="theme-toggle" class="hover:text-reach-pink transition duration-300 ml-4" onclick="toggleTheme()">
+                    <i data-lucide="sun" class="w-6 h-6"></i>
+                </button>
+                
+                <button id="auth-button" class="btn-reach px-4 py-1.5 rounded-full bg-reach-pink text-reach-bg font-bold shadow-lg" onclick="handleAuth()">
+                    <i data-lucide="log-in" class="inline w-5 h-5 mr-1"></i> Entrar
+                </button>
+            </div>
+            <button class="md:hidden text-2xl" onclick="toggleMobileMenu()">
+                <i data-lucide="menu" class="w-7 h-7"></i>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Content Sections Container -->
+    <main class="max-w-7xl mx-auto p-4 sm:p-8 pt-10">
+
+        <!-- 1. Home Section (Proposta Principal) -->
+        <section id="home" class="py-16 text-center fade-in">
+            <div class="space-y-4 mb-10">
+                <span class="text-sm font-bold uppercase tracking-widest text-reach-purple">
+                    Resgatar • Educar • Amar • Cuidar • Humanizar
+                </span>
+                <h2 class="text-5xl md:text-6xl font-black leading-tight">
+                    Comunidade Onde <span class="text-reach-cyan border-b-4 border-reach-pink pb-1">O Tempo é Valor</span>.
+                </h2>
+            </div>
+
+            <p class="max-w-4xl mx-auto text-xl text-reach-text/70 mb-12">
+                REACH é o seu Banco de Tempo Comunitário. Trocamos habilidades por horas de colaboração. <strong class="text-reach-pink font-bold">Sem dinheiro</strong>, apenas solidariedade e apoio mútuo.
+            </p>
+
+            <button class="btn-reach text-xl font-bold px-10 py-4 rounded-xl bg-reach-pink text-reach-bg shadow-2xl hover:bg-reach-pink/90" onclick="showSection('exchanges')">
+                <i data-lucide="hand-heart" class="inline w-6 h-6 mr-2"></i> Comece a Trocar Agora
+            </button>
+
+            <!-- Grid de Impacto (Percepção, Emoção, Eficiência) -->
+            <div class="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-6 bg-reach-purple/20 rounded-xl interactive-card border border-reach-purple/70">
+                    <i data-lucide="zap" class="w-8 h-8 mb-3 text-reach-cyan"></i>
+                    <h4 class="text-xl font-bold mb-2 text-reach-cyan">Eficiência (Horas)</h4>
+                    <p class="text-sm text-reach-text/80">Nosso sistema de crédito é simples: 1h oferecida = 1h recebida. Sem burocracia, apenas trocas diretas.</p>
+                </div>
+                <div class="p-6 bg-reach-purple/20 rounded-xl interactive-card border border-reach-purple/70">
+                    <i data-lucide="heart" class="w-8 h-8 mb-3 text-reach-pink"></i>
+                    <h4 class="text-xl font-bold mb-2 text-reach-pink">Emoção (Vínculos)</h4>
+                    <p class="text-sm text-reach-text/80">Focamos na colaboração humana. Cada troca fortalece os laços de vizinhança e o bem-estar comunitário.</p>
+                </div>
+                <div class="p-6 bg-reach-purple/20 rounded-xl interactive-card border border-reach-purple/70">
+                    <i data-lucide="eye" class="w-8 h-8 mb-3 text-reach-cyan"></i>
+                    <h4 class="text-xl font-bold mb-2 text-reach-cyan">Percepção (Clareza)</h4>
+                    <p class="text-sm text-reach-text/80">O site é intuitivo. Encontre ajuda ou ofereça suas habilidades em poucos cliques. Simples e transparente.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Exchanges Section (Banco de Trocas) -->
+        <section id="exchanges" class="py-16 hidden fade-in">
+            <h2 class="text-4xl font-extrabold mb-8 text-center text-reach-cyan">Banco de Trocas Ativas</h2>
+            
+            <div class="flex flex-col md:flex-row gap-4 mb-8">
+                <input type="text" id="search-input" placeholder="Buscar por 'costura', 'aulas de inglês', 'pequena reforma'..."
+                       class="flex-grow p-4 rounded-xl bg-reach-card border border-reach-purple text-reach-text placeholder-reach-text/50 focus:ring-2 focus:ring-reach-cyan">
+                <button class="btn-reach px-6 py-3 rounded-xl bg-reach-purple text-reach-bg font-bold hover:bg-reach-purple/80" onclick="simulateServiceCreation()">
+                    <i data-lucide="plus-circle" class="inline w-5 h-5 mr-2"></i> Publicar Oferta/Pedido
+                </button>
+            </div>
+
+            <div id="service-listings" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Listings serão injetados pelo JS (ou exemplos de placeholder) -->
+                <div class="p-6 bg-reach-card/50 rounded-xl border border-reach-cyan/50 interactive-card">
+                    <h4 class="text-2xl font-bold text-reach-cyan">Oferta: Reforço Escolar (Ensino Médio)</h4>
+                    <p class="text-reach-pink text-sm mb-3 font-semibold">Horas Necessárias: 2.0h/sessão</p>
+                    <p class="text-reach-text/70 mb-4 text-sm">Ofereço ajuda em física e química em troca de auxílio com jardinagem ou organização de arquivos digitais.</p>
+                    <div class="flex justify-between items-center mt-4">
+                        <span class="text-xs text-reach-text/60">Membro: [ID do Usuário Simulada]</span>
+                         <button class="text-sm bg-reach-pink text-reach-bg font-semibold px-4 py-2 rounded-lg hover:bg-reach-pink/80" onclick="simulateContact('Membro Ativo')">
+                            <i data-lucide="message-square" class="inline w-4 h-4 mr-1"></i> Contato
+                        </button>
+                    </div>
+                </div>
+                <div class="p-6 bg-reach-card/50 rounded-xl border border-reach-pink/50 interactive-card">
+                    <h4 class="text-2xl font-bold text-reach-pink">Pedido: Conserto de Eletrodoméstico</h4>
+                    <p class="text-reach-cyan text-sm mb-3 font-semibold">Horas Oferecidas: 3.5h (Total)</p>
+                    <p class="text-reach-text/70 mb-4 text-sm">Preciso de um técnico para verificar uma máquina de lavar roupa. As horas serão creditadas imediatamente após o serviço.</p>
+                    <div class="flex justify-between items-center mt-4">
+                        <span class="text-xs text-reach-text/60">Membro: [ID do Usuário Simulada]</span>
+                         <button class="text-sm bg-reach-pink text-reach-bg font-semibold px-4 py-2 rounded-lg hover:bg-reach-pink/80" onclick="simulateContact('Membro B')">
+                            <i data-lucide="message-square" class="inline w-4 h-4 mr-1"></i> Contato
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Mais listings aqui... -->
+            </div>
+        </section>
+        
+        <!-- 3. Profile Section (Meu REACH - Dashboard) -->
+        <section id="profile" class="py-16 hidden fade-in">
+            <h2 class="text-4xl font-extrabold mb-8 text-center text-reach-purple">Meu Perfil e Banco de Horas</h2>
+            
+            <div class="bg-reach-card p-8 rounded-2xl shadow-2xl border border-reach-pink/50">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between space-y-4 md:space-y-0 pb-6 border-b border-reach-purple/50">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 rounded-full bg-reach-cyan flex items-center justify-center text-3xl font-bold text-reach-bg">
+                            <i data-lucide="user" class="w-10 h-10"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-3xl font-bold text-reach-cyan" id="profile-name">Carregando Nome...</h3>
+                            <p class="text-reach-text/70 text-sm" id="profile-id"></p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-end space-y-1">
+                        <!-- Status de Verificação -->
+                        <span id="identity-status" class="px-3 py-1 text-xs rounded-full bg-red-800/50 text-red-300 font-semibold">❌ Não Verificado</span>
+                        <button class="text-xs text-reach-cyan hover:text-reach-pink" onclick="simulateIdentityVerification()">
+                            Verificar Identidade (Segurança)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Painel de Horas/Pontos (Moedas) -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 my-8">
+                    <div class="p-4 rounded-xl bg-reach-purple/30 border border-reach-purple interactive-card text-center">
+                        <i data-lucide="clock" class="w-6 h-6 mb-2 text-reach-cyan mx-auto"></i>
+                        <p class="text-sm text-reach-text/80">Horas Disponíveis</p>
+                        <p class="text-3xl font-extrabold text-reach-cyan" id="hours-available">0.0h</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-reach-purple/30 border border-reach-purple interactive-card text-center">
+                        <i data-lucide="send" class="w-6 h-6 mb-2 text-reach-pink mx-auto"></i>
+                        <p class="text-sm text-reach-text/80">Horas Oferecidas</p>
+                        <p class="text-3xl font-extrabold text-reach-pink" id="hours-offered">0.0h</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-reach-purple/30 border border-reach-purple interactive-card text-center">
+                        <i data-lucide="trending-up" class="w-6 h-6 mb-2 text-reach-text mx-auto"></i>
+                        <p class="text-sm text-reach-text/80">Ranking Solidário</p>
+                        <p class="text-3xl font-extrabold text-reach-text" id="profile-ranking">--</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-reach-purple/30 border border-reach-purple interactive-card text-center">
+                        <i data-lucide="star" class="w-6 h-6 mb-2 text-yellow-400 mx-auto"></i>
+                        <p class="text-sm text-reach-text/80">Avaliação Média</p>
+                        <p class="text-3xl font-extrabold text-yellow-400" id="profile-rating">N/A</p>
+                    </div>
+                </div>
+
+                <!-- Edição de Perfil e Habilidades -->
+                <h4 class="text-2xl font-semibold mb-4 text-reach-pink border-t border-reach-purple/50 pt-6">Minhas Habilidades</h4>
+                <form id="profile-form" onsubmit="event.preventDefault(); saveProfile()">
+                    <div class="mb-4">
+                        <label for="input-name" class="block text-sm font-medium text-reach-text/70 mb-1">Nome Completo</label>
+                        <input type="text" id="input-name" class="w-full p-3 rounded-lg bg-reach-bg border border-reach-purple text-reach-text" required>
+                    </div>
+                    <div class="mb-6">
+                        <label for="input-skills" class="block text-sm font-medium text-reach-text/70 mb-1">O que você pode oferecer? (Separe por vírgula)</label>
+                        <textarea id="input-skills" class="w-full p-3 rounded-lg bg-reach-bg border border-reach-purple text-reach-text" rows="3" placeholder="Ex: Cuidar de plantas, Conserto de bicicletas, Aulas de informática"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="w-full btn-reach px-6 py-3 rounded-xl font-bold bg-reach-cyan text-reach-bg hover:bg-reach-cyan/80">
+                        <i data-lucide="save" class="inline w-5 h-5 mr-2"></i> Atualizar Perfil REACH
+                    </button>
+                    <p id="profile-message" class="mt-4 text-sm text-center text-reach-cyan hidden"></p>
+                </form>
+                
+                <!-- Área de Feedback e Contato (Simulado) -->
+                <h4 class="text-2xl font-semibold mt-12 mb-4 text-reach-pink border-t border-reach-purple/50 pt-6">Histórico de Trocas e Feedback</h4>
+                <div id="transaction-history" class="space-y-4">
+                    <div class="p-4 bg-reach-purple/20 rounded-lg border border-reach-pink/50">
+                        <div class="flex justify-between items-start">
+                            <p class="text-reach-text/80 italic mb-2">"Excelente ajuda com a mudança. Muito pontual e atencioso. Recomendo!"</p>
+                            <span class="text-yellow-400 font-bold ml-4">⭐⭐⭐⭐⭐</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-2 text-xs text-reach-text/60">
+                             <p>Troca de 4.0h | Com: [Nome do Vizinho]</p>
+                             <button class="text-reach-cyan hover:text-reach-pink" onclick="simulateContact('Vizinho')">
+                                <i data-lucide="mail" class="inline w-3 h-3"></i> Mensagem
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Elderly Registration Section (Apoio a Idosos) -->
+        <section id="elderly-reg" class="py-16 hidden fade-in">
+            <h2 class="text-4xl font-extrabold mb-8 text-center text-reach-pink">Área REACH: Amor e Cuidado</h2>
+            <div class="max-w-xl mx-auto bg-reach-card/70 p-8 rounded-2xl shadow-2xl border border-reach-pink">
+                <p class="text-reach-text/80 mb-6 text-lg text-center font-medium">
+                    Priorizamos o <strong class="text-reach-cyan">CUIDADO HUMANIZADO</strong>. O cadastro especial garante que idosos ou pessoas com alta necessidade sejam atendidos com prioridade por nossa rede de voluntários.
+                </p>
+
+                <form onsubmit="event.preventDefault(); registerElderly()">
+                    <div class="mb-4">
+                        <label for="elderly-name" class="block text-sm font-medium text-reach-text/70 mb-1">Nome do Idoso/Assistido</label>
+                        <input type="text" id="elderly-name" class="w-full p-3 rounded-lg bg-reach-bg border border-reach-cyan text-reach-text" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="elderly-contact" class="block text-sm font-medium text-reach-text/70 mb-1">Contato Principal do Responsável</label>
+                        <input type="text" id="elderly-contact" class="w-full p-3 rounded-lg bg-reach-bg border border-reach-cyan text-reach-text" placeholder="Telefone ou e-mail" required>
+                    </div>
+                    <div class="mb-6">
+                        <label for="elderly-needs" class="block text-sm font-medium text-reach-text/70 mb-1">Tipos de Ajuda Necessária (Ex: companhia, transporte, compras, leitura)</label>
+                        <textarea id="elderly-needs" class="w-full p-3 rounded-lg bg-reach-bg border border-reach-cyan text-reach-text" rows="3" required></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full btn-reach px-6 py-3 rounded-xl font-bold bg-reach-pink text-reach-bg">
+                        <i data-lucide="users" class="inline w-5 h-5 mr-2"></i> Confirmar Inclusão no Programa REACH
+                    </button>
+                </form>
+                <p id="elderly-message" class="mt-4 text-sm text-center text-reach-pink hidden"></p>
+            </div>
+        </section>
+
+        <!-- 5. Ranking Solidário -->
+        <section id="ranking" class="py-16 text-center fade-in">
+            <h2 class="text-4xl font-extrabold mb-8 text-reach-purple">Os Mais Ativos: Ranking Solidário</h2>
+            <p class="text-reach-text/70 max-w-2xl mx-auto mb-8">
+                Reconhecimento para quem doa mais tempo e inspira a comunidade. Suas horas oferecidas são seu impacto!
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                <div class="p-6 bg-reach-card border-b-4 border-reach-pink rounded-xl interactive-card">
+                    <p class="text-5xl mb-2">🥇</p>
+                    <p class="font-bold text-2xl text-reach-pink">A. Da Silva</p>
+                    <p class="text-lg text-reach-text/70">Total: 42.0 Horas</p>
+                </div>
+                <div class="p-6 bg-reach-card border-b-4 border-reach-cyan rounded-xl interactive-card">
+                    <p class="text-5xl mb-2">🥈</p>
+                    <p class="font-bold text-2xl text-reach-cyan">M. Fernandes</p>
+                    <p class="text-lg text-reach-text/70">Total: 35.5 Horas</p>
+                </div>
+                <div class="p-6 bg-reach-card border-b-4 border-reach-purple rounded-xl interactive-card">
+                    <p class="text-5xl mb-2">🥉</p>
+                    <p class="font-bold text-2xl text-reach-purple">J. Oliveira</p>
+                    <p class="text-lg text-reach-text/70">Total: 29.0 Horas</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mensagem de Confirmação/Alerta (Modal Personalizado) -->
+        <div id="modal-message" class="fixed inset-0 bg-reach-bg bg-opacity-80 flex items-center justify-center p-4 z-50 hidden">
+            <div class="bg-reach-card border-2 border-reach-pink p-10 rounded-2xl max-w-lg w-full text-center interactive-card">
+                <i id="modal-icon" data-lucide="check-circle" class="w-10 h-10 mx-auto mb-4 text-reach-cyan"></i>
+                <h3 class="text-3xl font-bold mb-4 text-reach-pink" id="modal-title"></h3>
+                <p class="text-reach-text/80 mb-8 text-lg" id="modal-content"></p>
+                <button class="btn-reach px-8 py-3 rounded-lg bg-reach-purple text-reach-bg font-bold" onclick="document.getElementById('modal-message').classList.add('hidden')">
+                    Fechar
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="p-6 text-center text-sm text-reach-text/60 border-t border-reach-purple/50 mt-10">
+        &copy; 2024 REACH - Banco de Tempo Comunitário. Desenvolvido para um Impacto Humano.
+        <p class="text-xs mt-2" id="current-user-id-footer"></p>
+    </footer>
+    
+    <!-- Inicialização do Lucide Icons -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+        });
+    </script>
+    
+    <!-- Firebase SDKs e Lógica de Aplicação (JScript) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot, collection, query, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- Variáveis Globais (MANDATÓRIO USAR) ---
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'reach-banco-tempo';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app, db, auth;
+        let currentUserId = 'ID_NAO_AUTENTICADO';
+        let profileData = {};
+        let isAuthReady = false;
+
+        // --- Estruturas de Dados do Firestore (Caminhos) ---
+        // Dados Privados do Usuário
+        const getUserProfileDocRef = (uid) => doc(db, 'artifacts', appId, 'users', uid, 'profile', 'user_data');
+        // Dados Públicos (Serviços e Ranking)
+        const getPublicServicesCollectionRef = () => collection(db, 'artifacts', appId, 'public', 'data', 'services');
+
+        // --- LÓGICA DO TEMA (Modo Claro/Escuro) ---
+        window.toggleTheme = function() {
+            const isLightMode = document.body.classList.toggle('light-mode');
+            const theme = isLightMode ? 'light' : 'dark';
+            localStorage.setItem('theme', theme);
+            updateThemeIcon(theme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('theme-toggle').querySelector('i');
+            if (icon) {
+                icon.setAttribute('data-lucide', theme === 'light' ? 'moon' : 'sun');
+                lucide.createIcons(); // Re-renderiza o ícone
+            }
+        }
+
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark'; // Padrão para escuro
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+            }
+            updateThemeIcon(savedTheme);
+        }
+
+
+        // --- INICIALIZAÇÃO DO FIREBASE ---
+        if (firebaseConfig) {
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                
+                // 1. Tratamento de Autenticação
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        currentUserId = user.uid;
+                        document.getElementById('auth-button').innerHTML = '<i data-lucide="log-out" class="inline w-5 h-5 mr-1"></i> Sair';
+                        document.getElementById('profile-id').textContent = `ID: ${currentUserId.substring(0, 8)}...`;
+                        document.getElementById('current-user-id-footer').textContent = `ID Completo: ${currentUserId}`;
+                        lucide.createIcons(); // Atualiza ícones
+                        
+                        // Inicia listeners após a autenticação
+                        listenToProfile(currentUserId);
+                        listenToServices();
+                        
+                    } else {
+                         // Tenta signInWithCustomToken ou Anônimo
+                        try {
+                            if (initialAuthToken) {
+                                await signInWithCustomToken(auth, initialAuthToken);
+                            } else {
+                                await signInAnonymously(auth);
+                            }
+                        } catch (e) {
+                            console.error("Erro na autenticação inicial:", e);
+                        }
+                        
+                        document.getElementById('auth-button').innerHTML = '<i data-lucide="log-in" class="inline w-5 h-5 mr-1"></i> Entrar';
+                        document.getElementById('profile-id').textContent = `ID: Não Autenticado`;
+                        document.getElementById('current-user-id-footer').textContent = 'ID Completo: Não disponível';
+                        lucide.createIcons();
+                    }
+                    isAuthReady = true;
+                });
+            } catch (error) {
+                console.error("Erro na inicialização do Firebase:", error);
+                isAuthReady = true;
+            }
+        } else {
+            console.error("Configuração do Firebase ausente. O app funciona em modo de demonstração.");
+            isAuthReady = true;
+        }
+
+
+        // --- LISTENERS DE DADOS ---
+
+        function listenToProfile(uid) {
+            if (!db || !uid) return;
+
+            const docRef = getUserProfileDocRef(uid);
+            onSnapshot(docRef, (docSnap) => {
+                const defaultProfile = {
+                    name: 'Novo Membro', hoursAvailable: 0.0, hoursOffered: 0.0,
+                    skills: '', rating: 0, identityVerified: false, isElderlyRegistered: false
+                };
+                profileData = { ...defaultProfile, ...(docSnap.exists() ? docSnap.data() : {}) };
+                updateProfileUI();
+            }, (error) => {
+                console.error("Erro ao ouvir perfil:", error);
+            });
+        }
+
+        let services = [];
+        function listenToServices() {
+            if (!db) return;
+
+            const q = query(getPublicServicesCollectionRef()); 
+
+            onSnapshot(q, (snapshot) => {
+                services = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderServiceListings();
+            }, (error) => {
+                console.error("Erro ao ouvir serviços:", error);
+            });
+        }
+
+
+        // --- FUNÇÕES DE INTERFACE (UI) ---
+
+        window.showSection = function(sectionId) {
+            const sections = ['home', 'exchanges', 'profile', 'elderly-reg', 'ranking'];
+            sections.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.classList.add('hidden');
+                    el.classList.remove('fade-in');
+                }
+            });
+
+            const activeSection = document.getElementById(sectionId);
+            if (activeSection) {
+                activeSection.classList.remove('hidden');
+                activeSection.classList.add('fade-in');
+            }
+        }
+
+        function updateProfileUI() {
+            // Atualiza inputs
+            document.getElementById('input-name').value = profileData.name;
+            document.getElementById('input-skills').value = profileData.skills;
+
+            // Atualiza Dashboard
+            document.getElementById('profile-name').textContent = profileData.name;
+            document.getElementById('hours-available').textContent = `${profileData.hoursAvailable.toFixed(1)}h`;
+            document.getElementById('hours-offered').textContent = `${profileData.hoursOffered.toFixed(1)}h`;
+            document.getElementById('profile-ranking').textContent = profileData.hoursOffered > 0 ? profileData.hoursOffered >= 20 ? 'TOP 10!' : 'Iniciante' : '--';
+            document.getElementById('profile-rating').textContent = profileData.rating > 0 ? `${profileData.rating.toFixed(1)} ⭐` : 'N/A';
+            
+            // Status de Identidade
+            const identityStatusEl = document.getElementById('identity-status');
+            if (profileData.identityVerified) {
+                 identityStatusEl.textContent = '✅ Verificado (Seguro)';
+                 identityStatusEl.className = 'px-3 py-1 text-xs rounded-full bg-green-600/50 text-green-300 font-semibold';
+            } else {
+                 identityStatusEl.textContent = '❌ Não Verificado';
+                 identityStatusEl.className = 'px-3 py-1 text-xs rounded-full bg-red-800/50 text-red-300 font-semibold';
+            }
+        }
+
+        function renderServiceListings() {
+            const container = document.getElementById('service-listings');
+            container.innerHTML = '';
+            
+            // Se a lista do Firestore estiver vazia, usa placeholders
+            const listingsToRender = services.length > 0 ? services : [
+                { id: 1, title: 'Oferta: Aulas de Piano', type: 'offer', hoursEstimate: 1.5, description: 'Sessões de 90 minutos para iniciantes. Aceito troca por reparos em hidráulica.', userId: 'user-001' },
+                { id: 2, title: 'Pedido: Montagem de Móveis', type: 'request', hoursEstimate: 4.0, description: 'Preciso de ajuda para montar um guarda-roupa. Horas garantidas!', userId: 'user-002' },
+            ];
+
+            listingsToRender.forEach(service => {
+                 const isOffer = service.type === 'offer';
+                 const borderColor = isOffer ? 'border-reach-cyan/50' : 'border-reach-pink/50';
+                 const titleColor = isOffer ? 'text-reach-cyan' : 'text-reach-pink';
+
+                 container.innerHTML += `
+                    <div class="p-6 bg-reach-card/50 rounded-xl border ${borderColor} interactive-card">
+                        <h4 class="text-2xl font-bold ${titleColor}">${isOffer ? 'Oferta' : 'Pedido'}: ${service.title}</h4>
+                        <p class="text-reach-text/80 text-sm mb-3 font-semibold">Horas Estimadas: ${service.hoursEstimate.toFixed(1)}h</p>
+                        <p class="text-reach-text/70 mb-4 text-sm">${service.description}</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-xs text-reach-text/60">Membro ID: ${service.userId.substring(0, 8)}...</span>
+                            <button class="text-sm bg-reach-pink text-reach-bg font-semibold px-4 py-2 rounded-lg hover:bg-reach-pink/80" onclick="simulateContact('${service.userId}')">
+                                <i data-lucide="message-square" class="inline w-4 h-4 mr-1"></i> Contato
+                            </button>
+                        </div>
+                    </div>
+                 `;
+            });
+            lucide.createIcons(); // Garante que os ícones sejam renderizados
+        }
+
+
+        // --- FUNÇÕES DE LÓGICA DE NEGÓCIO ---
+
+        window.handleAuth = function() {
+            if (auth.currentUser && !auth.currentUser.isAnonymous) {
+                signOut(auth).then(() => {
+                    showModal('Desconectado', 'Você saiu da sua conta REACH. Volte logo!', 'log-out');
+                }).catch(error => console.error("Erro ao fazer logout:", error));
+            } else {
+                 showModal('Autenticação', 'Aguarde, tentando reconectar ao sistema...', 'loader-circle');
+            }
+        }
+
+        window.saveProfile = async function() {
+            if (!currentUserId || !db || !isAuthReady) {
+                showModal('Erro de Acesso', 'Não foi possível salvar. Tente entrar novamente.', 'alert-triangle');
+                return;
+            }
+
+            const name = document.getElementById('input-name').value;
+            const skills = document.getElementById('input-skills').value.trim();
+            
+            const updatedData = {
+                name: name,
+                skills: skills, 
+                // Merge para manter as horas e status existentes
+            };
+
+            try {
+                const docRef = getUserProfileDocRef(currentUserId);
+                // Usa setDoc com { merge: true } para atualizar ou criar
+                await setDoc(docRef, updatedData, { merge: true }); 
+                showModal('Sucesso!', 'Seu Perfil e Habilidades foram atualizados.', 'check-circle');
+                
+            } catch (error) {
+                console.error("Erro ao salvar perfil:", error);
+                showModal('Erro de Sistema', 'Não foi possível salvar o perfil. Tente novamente mais tarde.', 'alert-circle');
+            }
+        }
+        
+        window.simulateServiceCreation = async function() {
+            if (!currentUserId || !db || !profileData.identityVerified) {
+                showModal('Ação Necessária', 'Seu perfil deve estar verificado para publicar no Banco de Trocas.', 'shield-x');
+                return;
+            }
+            
+            // Simulação de dados de um novo serviço, usando dados do perfil para maior realismo
+            const newService = {
+                userId: currentUserId,
+                userName: profileData.name,
+                title: profileData.skills.split(',')[0] ? `Oferta: ${profileData.skills.split(',')[0].trim()}` : "Oferta de Habilidade",
+                description: `Ofereço ajuda com ${profileData.skills || 'diversas tarefas'} em troca de horas.`,
+                type: Math.random() < 0.6 ? 'offer' : 'request', // Maioria das vezes, é uma oferta
+                hoursEstimate: (Math.random() * 2 + 1).toFixed(1) * 1,
+                timestamp: new Date().toISOString(),
+            };
+
+            try {
+                const collectionRef = getPublicServicesCollectionRef();
+                // setDoc sem argumento doc para que o Firestore gere um novo ID
+                await setDoc(doc(collectionRef), newService); 
+                showModal('Publicado!', `Seu ${newService.type === 'offer' ? 'Oferta' : 'Pedido'} foi para o Banco de Trocas!`, 'send');
+            } catch (error) {
+                console.error("Erro ao criar serviço:", error);
+                showModal('Erro', 'Houve um erro ao publicar o serviço.', 'alert-triangle');
+            }
+        }
+        
+        window.simulateIdentityVerification = function() {
+            if (profileData.identityVerified) {
+                showModal('Verificação', 'Seu perfil já está verificado!', 'shield-check');
+                return;
+            }
+
+            showModal('Confirmação de Identidade (Simulação)', 
+                      'A verificação de identidade (que incluiria confirmação documental e facial) é crucial para a confiança. O sistema está simulando a verificação. Aguarde 3 segundos...', 'scan');
+            
+            setTimeout(async () => {
+                if (currentUserId && db) {
+                     const docRef = getUserProfileDocRef(currentUserId);
+                     // Usa updateDoc para garantir que o documento exista
+                     await setDoc(docRef, { identityVerified: true, rating: 5.0 }, { merge: true }); 
+                     showModal('Verificado!', 'Identidade confirmada! Seu perfil agora é um membro confiável (e ganhou 5.0 de avaliação inicial).', 'shield-check');
+                }
+            }, 3000);
+        }
+
+        window.simulateContact = function(targetId) {
+            showModal('Área de Contato', 
+                      `Você está iniciando um chat seguro com o membro ID: ${targetId.substring(0, 8)}... Aqui você coordena o serviço e a troca de horas.`, 'message-square-text');
+        }
+        
+        window.registerElderly = async function() {
+            if (!currentUserId || !db) {
+                showModal('Ação Necessária', 'Você precisa estar logado para fazer este registro.', 'lock');
+                return;
+            }
+            
+            const name = document.getElementById('elderly-name').value;
+            const contact = document.getElementById('elderly-contact').value;
+            const needs = document.getElementById('elderly-needs').value;
+
+            // Simula o registro no perfil do usuário (ou no responsável)
+            try {
+                const docRef = getUserProfileDocRef(currentUserId);
+                await setDoc(docRef, { 
+                    isElderlyRegistered: true, 
+                    elderlyInfo: { name, contact, needs } 
+                }, { merge: true });
+                
+                showModal('REACH Cuidado Confirmado!', `O cadastro de ${name} foi realizado e receberá prioridade. Obrigado por humanizar o REACH.`, 'heart');
+                
+                // Limpa o formulário após sucesso
+                document.getElementById('elderly-reg').querySelector('form').reset();
+
+            } catch (error) {
+                 console.error("Erro ao registrar idoso:", error);
+                 showModal('Erro no Cadastro', 'Não foi possível completar o registro. Tente novamente.', 'x-circle');
+            }
+        }
+
+        // Função para mostrar o modal de alerta (substitui alert() e confirm())
+        function showModal(title, content, iconName = 'info') {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-content').textContent = content;
+            document.getElementById('modal-icon').setAttribute('data-lucide', iconName);
+            lucide.createIcons(); // Atualiza ícone do modal
+            document.getElementById('modal-message').classList.remove('hidden');
+        }
+
+        // Inicialização: Mostra a seção inicial e define o tema
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeTheme(); // Define o tema antes de carregar o conteúdo
+            showSection('home');
+        });
+
+    </script>
+</body>
+</html>
